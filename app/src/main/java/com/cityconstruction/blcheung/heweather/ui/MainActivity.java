@@ -1,9 +1,11 @@
-package com.cityconstruction.blcheung.heweather;
+package com.cityconstruction.blcheung.heweather.ui;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.widget.Toast;
+
+import com.cityconstruction.blcheung.heweather.R;
 
 public class MainActivity extends AppCompatActivity {
 

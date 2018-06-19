@@ -1,6 +1,7 @@
 package com.cityconstruction.blcheung.heweather.ui;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,11 +16,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cityconstruction.blcheung.heweather.R;
+import com.cityconstruction.blcheung.heweather.WeatherActivity;
 import com.cityconstruction.blcheung.heweather.db.City;
 import com.cityconstruction.blcheung.heweather.db.County;
 import com.cityconstruction.blcheung.heweather.db.Province;
 import com.cityconstruction.blcheung.heweather.util.HttpUtil;
-import com.cityconstruction.blcheung.heweather.util.JsonHandler;
+import com.cityconstruction.blcheung.heweather.util.JSONHandler;
 
 import org.litepal.crud.DataSupport;
 
@@ -65,6 +67,7 @@ public class ChooseAreaFragment extends Fragment {
     private List<City> cityList;
     private List<County> countyList;
     private List<String> dataList = new ArrayList<>();
+    public static final String EXTRA_WEATHER_ID = "weather_id";
 
     private TextView tvTitle;
     private Button btnBack;
@@ -73,6 +76,7 @@ public class ChooseAreaFragment extends Fragment {
     private ProgressDialog progressDialog;
 
     private String adress = "http://guolin.tech/api/china/";
+    public static String weatherId;
 
 
     @Nullable
@@ -100,8 +104,11 @@ public class ChooseAreaFragment extends Fragment {
                     selectCity = cityList.get(position);
                     queryCounties();
                 } else if (currentLevel == LEVEL_CONTY) {
-                    String weatherId = countyList.get(position).getWeatherId();
-                    // TODO -> 第二阶段
+                    weatherId = countyList.get(position).getWeatherId();
+                    Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                    intent.putExtra(EXTRA_WEATHER_ID, weatherId);
+                    startActivity(intent);
+                    getActivity().finish();
                 }
             }
         });
@@ -193,11 +200,11 @@ public class ChooseAreaFragment extends Fragment {
                 String responseData = response.body().string();
                 boolean result = false;
                 if (level == LEVEL_PROVINCE) {
-                    result = JsonHandler.handlerProvinceResponse(responseData);
+                    result = JSONHandler.handlerProvinceResponse(responseData);
                 } else if (level == LEVEL_CITY) {
-                    result = JsonHandler.handlerCityResponse(responseData, selectProvince.getId());
+                    result = JSONHandler.handlerCityResponse(responseData, selectProvince.getId());
                 } else if (level == LEVEL_CONTY) {
-                    result = JsonHandler.handlerCountyResponse(responseData, selectCity.getId());
+                    result = JSONHandler.handlerCountyResponse(responseData, selectCity.getId());
                 }
                 if (result) {
                     getActivity().runOnUiThread(new Runnable() {
